@@ -70,3 +70,5 @@ df_transformed.write.format("delta").mode("overwrite").save(delta_table_path)
 
 # Stop the Spark session
 spark.stop()
+
+
