@@ -3,12 +3,21 @@ name: Docker Image CI Manual
 on: workflow_dispatch
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Print current directory
+      run: pwd
+
+    - name: List files in current directory
+      run: ls -l
+
+    - name: List files in root directory
+      run: ls -l /
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build --progress=plain . --file Dockerfile --tag my-image-name:$(date +%s)
