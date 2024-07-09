@@ -20,4 +20,4 @@ jobs:
       run: ls -l /
 
     - name: Build the Docker image
-      run: docker build --progress=plain . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build --progress=plain . --file Dockerfile.txt --tag my-image-name:$(date +%s)
