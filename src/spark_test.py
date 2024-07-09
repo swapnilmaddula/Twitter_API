@@ -20,3 +20,5 @@ df = spark.createDataFrame(data, columns)
 
 # Show the DataFrame
 df.show()
+
+spark.stop()
