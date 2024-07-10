@@ -56,5 +56,8 @@ class LoadTweetData:
             new_data = new_data.join(source_data_ids, on="tweet_id", how="left_anti")
         
         updated_tweet_data = source_data.union(new_data)
-        updated_tweet_data.write.csv(file_path, header=True, mode="overwrite")
+        try:
+            updated_tweet_data.write.csv(file_path, header=True, mode="overwrite")
+        except Exception as e:
+            print(e)
         print("data written successfully")
