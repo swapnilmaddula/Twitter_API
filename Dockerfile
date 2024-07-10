@@ -36,4 +36,4 @@ ENV NAME World
 
 USER spark
 
-CMD ["python", "src/main.py"]
+CMD ["python3", "src/main.py"]
