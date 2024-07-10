@@ -46,6 +46,8 @@ class Top5Trends:
         extract_trending_topics_udf = F.udf(extract_trending_topics, StringType())
         grouped_tweets = grouped_tweets.withColumn('trending_topics', extract_trending_topics_udf(F.col('concatenated_content')))
         grouped_tweets = grouped_tweets["date","trending_topics"]
+        self = self.grouped_tweets
         return grouped_tweets
+        
 
 

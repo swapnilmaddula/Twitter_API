@@ -1,7 +1,7 @@
 import identify_trending_topics
 import read_source_data
 
-def main():
+def main(source_file_path, silver_path, gold_path):
     load_tweet_data = read_source_data.LoadTweetData()
 
     load_tweet_data.read_json_file('data/source_data/dataset1.json')
