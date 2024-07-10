@@ -23,24 +23,17 @@ RUN set -ex; \
     apt-get install -y python3 python3-pip; \
     rm -rf /var/lib/apt/lists/*
 
-USER spark
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
 COPY . /app
 
-# Create a virtual environment
-RUN python -m venv venv
 
-# Install dependencies in the virtual environment
-RUN . /app/venv/bin/activate && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 80 available to the world outside this container
 EXPOSE 80
 
-# Define environment variable
 ENV NAME World
 
-# Run app.py using the virtual environment when the container launches
-CMD ["/app/venv/bin/python", "main.py"]
+USER spark
+
+CMD ["python", "src/main.py"]
