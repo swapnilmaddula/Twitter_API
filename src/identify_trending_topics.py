@@ -3,6 +3,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.functions import to_date, collect_list, concat_ws, udf, StringType
 import nltk
 from collections import Counter
+import re
 
 spark = SparkSession.builder.appName("Elsevier").getOrCreate()
 
@@ -27,25 +28,24 @@ class Top5Trends:
     def identify_trending_topics(self):
         tweet_data = self.read_csv()
         grouped_tweets = tweet_data.withColumn("date", F.to_date("created_at"))
-        grouped_tweets = grouped_tweets.groupBy("date").agg(F.concat_ws(",", F.collect_list("content")).alias("concatenated_content"))
+        grouped_tweets = grouped_tweets.groupBy("date").agg(F.concat_ws(" ", F.collect_list("content")).alias("concatenated_content"))
         grouped_tweets = grouped_tweets.na.drop(subset = ["date"])
         stop_words = self.obtain_list_of_ignore_words("dutch")
-        
+        unwanted_characters_regex= re.compile(r'[^a-zA-Z\s]')
+
         def extract_trending_topics(content):
+            content = unwanted_characters_regex.sub('', content)
+            print(content)
             tokens = nltk.word_tokenize(content)
-            filtered_tokens = [w for w in tokens if not w.lower() in stop_words]
+            filtered_tokens = [w for w in tokens if not w.lower() in stop_words and len(w) >= 3]
             word_counter = Counter(filtered_tokens)
             most_common_words = word_counter.most_common(5)
             most_common_words_string = ','.join([word for word, count in most_common_words])
             return most_common_words_string
         
         extract_trending_topics_udf = F.udf(extract_trending_topics, StringType())
-        
         grouped_tweets = grouped_tweets.withColumn('trending_topics', extract_trending_topics_udf(F.col('concatenated_content')))
+        grouped_tweets = grouped_tweets["date","trending_topics"]
         return grouped_tweets
 
-file_path = "data/silver/tweet_data/*.csv"
-top5trends_instance = Top5Trends(file_path)
-grouped_df = top5trends_instance.identify_trending_topics()
-grouped_df.show()
 
