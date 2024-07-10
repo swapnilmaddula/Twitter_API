@@ -37,7 +37,7 @@ class LoadTweetData:
         self.new_data = rows
         return rows
 
-    def incremental_load(self, file_path="data/tweet_data.csv"):
+    def incremental_load(self, file_path):
         try:
             schema = StructType([
                 StructField("created_at", StringType(), True),
@@ -56,4 +56,5 @@ class LoadTweetData:
             new_data = new_data.join(source_data_ids, on="tweet_id", how="left_anti")
         
         updated_tweet_data = source_data.union(new_data)
-        updated_tweet_data.coalesce(1).write.csv(file_path, header=True, mode="overwrite")
+        updated_tweet_data.write.csv(file_path, header=True, mode="overwrite")
+        print("data written successfully")

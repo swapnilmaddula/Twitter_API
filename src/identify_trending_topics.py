@@ -44,7 +44,8 @@ class Top5Trends:
         grouped_tweets = grouped_tweets.withColumn('trending_topics', extract_trending_topics_udf(F.col('concatenated_content')))
         return grouped_tweets
 
-file_path = "data/silver/tweet_data/part-00000-5334d6c2-d037-4d69-a017-aed98fc2790e-c000.csv"
+file_path = "data/silver/tweet_data/*.csv"
 top5trends_instance = Top5Trends(file_path)
 grouped_df = top5trends_instance.identify_trending_topics()
 grouped_df.show()
+
