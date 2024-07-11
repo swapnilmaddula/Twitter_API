@@ -52,6 +52,8 @@ class Top5Trends:
 
         #write to gold
         grouped_tweets.write.csv(path = self.folderpath_gold,header = True, mode = "overwrite")
+        grouped_tweets.show()
+    
         
 
 

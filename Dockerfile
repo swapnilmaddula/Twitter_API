@@ -27,13 +27,10 @@ WORKDIR /app
 
 COPY . /app
 
-
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 80
+ENV NLTK_DATA=/app/nltk_data
 
-ENV NAME World
+RUN chmod +x /app/entrypoint.sh
 
-USER spark
-
-CMD ["python3", "src/main.py"]
+ENTRYPOINT ["/app/entrypoint.sh"]

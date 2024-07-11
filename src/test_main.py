@@ -27,10 +27,12 @@ def test_main():
     
     assert(row_count) == 0
 
+
 if __name__ == "__main__":
-    pytest.main([__file__])    
+    pytest.main([__file__])
     
-    
+
+
 
 
 
