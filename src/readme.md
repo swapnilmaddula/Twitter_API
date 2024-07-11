@@ -2,7 +2,7 @@
 
 This repo contains the code for an app to parse tweet date and identify 5 most common trends
 
-The app can be executed by cloning the directory and running the command >docker-compose up --build
+The app can be executed by cloning the directory and running the command > docker-compose up --build
 
 The structure of the directory is as follows:
 1) "src" folder contains the main code in python and pyspark
