@@ -27,13 +27,8 @@ WORKDIR /app
 
 COPY . /app
 
-
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 80
+RUN chmod +x /app/entrypoint.sh
 
-ENV NAME World
-
-USER spark
-
-CMD ["python3", "src/main.py"]
+ENTRYPOINT ["/app/entrypoint.sh"]

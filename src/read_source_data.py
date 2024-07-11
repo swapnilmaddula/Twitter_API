@@ -10,6 +10,8 @@ class LoadTweetData:
         self.file_path_source = file_path_source 
         self.folder_path_silver = folder_path_silver 
         self.spark = SparkSession.builder.appName("Elsevier").getOrCreate()
+        self.spark.sparkContext.setLogLevel("ERROR")
+
         
     def read_json_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -24,12 +26,8 @@ class LoadTweetData:
                 content = tweet['interaction']['content']
                 tweet_id = tweet['twitter']['id']
                 rows.append([created_at, content, tweet_id])
-            except json.JSONDecodeError:
-                print(f"Error decoding JSON: {line}")
-            except KeyError as e:
-                print(f"Missing key {e} in JSON: {line}")
-            except ValueError as e:
-                print(f"Error parsing date: {created_at_raw} in JSON: {line}")
+            except Exception as e:
+                pass
         return rows
 
     def incremental_load(self):

@@ -6,6 +6,8 @@ from pyspark.sql import SparkSession
     # expectation: no trending topics should be written to the gold layer
 
 spark = SparkSession.builder.appName("Elsevier").getOrCreate()
+spark.sparkContext.setLogLevel("ERROR")
+
 
 def test_main():
 
@@ -27,10 +29,12 @@ def test_main():
     
     assert(row_count) == 0
 
+
 if __name__ == "__main__":
-    pytest.main([__file__])    
+    pytest.main([__file__])
     
-    
+
+
 
 
 
