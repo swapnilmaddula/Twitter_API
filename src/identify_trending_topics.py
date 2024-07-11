@@ -12,8 +12,8 @@ nltk.download('stopwords')
 class Top5Trends:
     
     def __init__(self, filepath_silver, folderpath_gold):
-        self = self.filepath_silver
-        self = self.folderpath_gold
+        self.filepath_silver = filepath_silver
+        self.folderpath_gold = folderpath_gold
         self.tweets = None
         self.spark = SparkSession.builder.appName("Elsevier").getOrCreate()
 
@@ -50,7 +50,9 @@ class Top5Trends:
         #concatenate top5 for each date
         grouped_tweets = grouped_tweets.withColumn('trending_topics', extract_trending_topics_udf(F.col('concatenated_content')))
         grouped_tweets = grouped_tweets["date","trending_topics"]
-        self = self.grouped_tweets
+
+        #write to gold
+        grouped_tweets.write.csv(path = self.folderpath_gold,header = True, mode = "overwrite")
         return grouped_tweets
         
 

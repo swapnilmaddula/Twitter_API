@@ -9,18 +9,15 @@ class LoadTweetData:
     def __init__(self, file_path_source, folder_path_silver):
         self.data = []
         self.new_data = []
-        self = self.file_path_source
-        self = self.folder_path_silver
-        spark = SparkSession.builder.appName("Elsevier").getOrCreate()
-
-    def read_json_file(self):
-        with open(self.file_path_source, 'r', encoding='utf-8') as file:
+        self.file_path_source = file_path_source 
+        self.folder_path_silver = folder_path_silver 
+        print(self.file_path_source)
+        self.spark = SparkSession.builder.appName("Elsevier").getOrCreate()
+        
+    def read_json_file_as_dataframe(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
             data = file.readlines()
-        self.data = data
-        return data
-
-    def parse_json_objects(self):
-        json_lines = self.data
+        json_lines = data
         rows = []
         for line in json_lines:
             try:
@@ -36,22 +33,22 @@ class LoadTweetData:
                 print(f"Missing key {e} in JSON: {line}")
             except ValueError as e:
                 print(f"Error parsing date: {created_at_raw} in JSON: {line}")
-        self.new_data = rows
         return rows
 
     def incremental_load(self):
-        try:
-            schema = StructType([
+        rows = self.read_json_file_as_dataframe(self.file_path_source)
+        schema = StructType([
                 StructField("created_at", StringType(), True),
                 StructField("content", StringType(), True),
                 StructField("tweet_id", StringType(), True)
             ])
-            source_data = self.spark.read.csv(self.folder_path_silver, header=True, schema=schema)
+        try:
+            source_data = self.spark.read.csv(path = f"{self.folder_path_silver}/*.csv", header=True, schema=schema)
         except Exception as e:
             print(f"Error reading source data: {e}")
             source_data = self.spark.createDataFrame([], schema)
-        
-        new_data = self.spark.createDataFrame(self.new_data, schema)
+
+        new_data = self.spark.createDataFrame(rows, schema)
         
         if not source_data.rdd.isEmpty():
             source_data_ids = source_data.select("tweet_id").distinct()
@@ -59,7 +56,9 @@ class LoadTweetData:
         
         updated_tweet_data = source_data.union(new_data)
         try:
-            updated_tweet_data.write.csv(self.folder_path_silver, header=True, mode="overwrite")
+            updated_tweet_data.write.csv(path = self.folder_path_silver, header=True, mode="overwrite")
+            print("data written successfully")
         except Exception as e:
             print(e)
-        print("data written successfully")
+            
+       
