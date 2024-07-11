@@ -36,7 +36,6 @@ class Top5Trends:
         #define logic for selecting and filtering words
         def extract_trending_topics(content):
             content = unwanted_characters_regex.sub('', content)
-            print(content)
             tokens = nltk.word_tokenize(content)
             filtered_tokens = [w for w in tokens if not w.lower() in stop_words and len(w) >= 3]
             word_counter = Counter(filtered_tokens)
@@ -53,7 +52,6 @@ class Top5Trends:
 
         #write to gold
         grouped_tweets.write.csv(path = self.folderpath_gold,header = True, mode = "overwrite")
-        return grouped_tweets
         
 
 
