@@ -1,3 +1,5 @@
+#Twitter Trend Analysis App
+
 This repo contains the code for an app to parse tweet date and identify 5 most common trends
 
 The app can be executed by cloning the directory and running the command >docker-compose up --build
