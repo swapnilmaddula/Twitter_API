@@ -38,27 +38,35 @@ class LoadTweetData:
     def incremental_load(self):
         rows = self.read_json_file_as_dataframe(self.file_path_source)
         schema = StructType([
-                StructField("created_at", StringType(), True),
-                StructField("content", StringType(), True),
-                StructField("tweet_id", StringType(), True)
-            ])
+            StructField("created_at", StringType(), True),
+            StructField("content", StringType(), True),
+            StructField("tweet_id", StringType(), True)  # Use StringType instead of int()
+        ])
+        
         try:
-            source_data = self.spark.read.csv(path = f"{self.folder_path_silver}/*.csv", header=True, schema=schema)
+            # Read all CSV files in the folder_path_silver directory
+            source_data = self.spark.read.csv(path=f"{self.folder_path_silver}/*.csv", header=True, schema=schema)
         except Exception as e:
             print(f"Error reading source data: {e}")
             source_data = self.spark.createDataFrame([], schema)
-
-        new_data = self.spark.createDataFrame(rows, schema)
         
-        if not source_data.rdd.isEmpty():
-            source_data_ids = source_data.select("tweet_id").distinct()
-            new_data = new_data.join(source_data_ids, on="tweet_id", how="left_anti")
-        
-        updated_tweet_data = source_data.union(new_data)
-        try:
-            updated_tweet_data.write.csv(path = self.folder_path_silver, header=True, mode="overwrite")
-            print("data written successfully")
-        except Exception as e:
-            print(e)
+        if rows:
+            new_data = self.spark.createDataFrame(rows, schema)
             
-       
+            if source_data.count() > 0:
+                source_data_ids = source_data.select("tweet_id")
+                print(source_data)
+                new_data_updated = new_data.join(source_data_ids, on="tweet_id", how="left_anti")
+            
+            if new_data.count() > 0:
+                updated_tweet_data = source_data.union(new_data)
+            else:
+                updated_tweet_data = source_data
+            
+            try:
+                updated_tweet_data.write.csv(path=self.folder_path_silver, header=True, mode="overwrite")
+                print("Data written successfully")
+            except Exception as e:
+                print(f"Error writing data: {e}")
+        else:
+            print("No new data to load")
