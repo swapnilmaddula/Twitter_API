@@ -6,11 +6,9 @@ from pyspark.sql.types import StructType, StructField, StringType
 class LoadTweetData:
 
     def __init__(self, file_path_source, folder_path_silver):
-        self.data = []
         self.new_data = []
         self.file_path_source = file_path_source 
         self.folder_path_silver = folder_path_silver 
-        print(self.file_path_source)
         self.spark = SparkSession.builder.appName("Elsevier").getOrCreate()
         
     def read_json_file(self, file_path):
@@ -63,7 +61,7 @@ class LoadTweetData:
             UNION
             SELECT * FROM source_data
         """)
-
+        merged_data = merged_data.dropDuplicates()
         try:
             merged_data.write.mode("overwrite").option("quoteAll", "true").csv(path=self.folder_path_silver, header=True)
             print("Data written successfully")

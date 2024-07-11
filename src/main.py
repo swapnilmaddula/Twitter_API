@@ -10,4 +10,8 @@ def main(source_file_path, silver_path, gold_path):
     top5trends.identify_trending_topics()
 
 if __name__ == "__main__":
+
+    
     main(source_file_path='data/source_data/dataset1.json', silver_path='data/silver/tweet_data', gold_path='data/gold/top5trends')
+    
+
