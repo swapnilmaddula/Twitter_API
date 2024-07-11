@@ -39,7 +39,7 @@ class LoadTweetData:
         schema = StructType([
             StructField("created_at", StringType(), True),
             StructField("content", StringType(), True),
-            StructField("tweet_id", StringType(), True)  # Use StringType instead of int()
+            StructField("tweet_id", StringType(), True)  
         ])
         
         new_data = self.spark.createDataFrame(rows, schema)
