@@ -3,6 +3,7 @@ import read_source_data
 from pyspark.sql import SparkSession
 
 spark = SparkSession.builder.appName("Elsevier").getOrCreate()
+spark.sparkContext.setLogLevel("ERROR")
 
 def main(source_file_path, silver_path, gold_path):
 

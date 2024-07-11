@@ -6,6 +6,8 @@ from pyspark.sql import SparkSession
     # expectation: no trending topics should be written to the gold layer
 
 spark = SparkSession.builder.appName("Elsevier").getOrCreate()
+spark.sparkContext.setLogLevel("ERROR")
+
 
 def test_main():
 

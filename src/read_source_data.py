@@ -10,6 +10,8 @@ class LoadTweetData:
         self.file_path_source = file_path_source 
         self.folder_path_silver = folder_path_silver 
         self.spark = SparkSession.builder.appName("Elsevier").getOrCreate()
+        self.spark.sparkContext.setLogLevel("ERROR")
+
         
     def read_json_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as file:

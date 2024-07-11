@@ -16,6 +16,8 @@ class Top5Trends:
         self.folderpath_gold = folderpath_gold
         self.tweets = None
         self.spark = SparkSession.builder.appName("Elsevier").getOrCreate()
+        self.spark.sparkContext.setLogLevel("ERROR")
+
 
     def read_csv(self):
         tweet_data = self.spark.read.csv(self.filepath_silver, header=True, inferSchema=True)

@@ -29,8 +29,6 @@ COPY . /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENV NLTK_DATA=/app/nltk_data
-
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
