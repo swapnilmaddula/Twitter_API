@@ -1,0 +1,9 @@
+# Ignore generated data and data directory
+data/gold
+!/data/gold.gitkeep
+data/silver
+!data/silver.gitkeep
+
+test_data/gold
+!/test_data/gold.gitkeep
+

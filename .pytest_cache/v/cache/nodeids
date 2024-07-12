@@ -1,0 +1,5 @@
+[
+  "src/test_main.py::test_main",
+  "src/test_main.py::test_main1",
+  "src/test_main.py::test_main2"
+]

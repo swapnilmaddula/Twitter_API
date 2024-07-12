@@ -9,6 +9,7 @@ nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('stopwords')
 
+#Identify top 5 trends
 class Top5Trends:
     
     def __init__(self, filepath_silver, folderpath_gold):
