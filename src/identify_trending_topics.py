@@ -21,7 +21,8 @@ class Top5Trends:
 
 
     def read_csv(self):
-        tweet_data = self.spark.read.csv(self.filepath_silver, header=True, inferSchema=True)
+        tweet_data = self.spark.read.options(delimiter="#@#@").csv(self.filepath_silver, header=True, inferSchema=True, multiLine=True)
+        tweet_data.show()
         return tweet_data
     
     def obtain_list_of_ignore_words(self, language):
