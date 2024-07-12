@@ -12,6 +12,7 @@ The structure of the directory is as follows:
 Description of the app:
 
 1) The "read_source_data.py" imports the source data and identifies the three attributes from the api result: Tweet_ID, content and date created at. 
+    The tweets with no ids are rejected
 2) The parsed and cleaned data is stored in the silver layer. This intermediate layer also provides scope for future analysis requirements: for instance, demographics. 
 3) The data is also loaded incrementally
 4) The cleaned data is then processed by the "identify_trending_topics.py" script to identify 5 most trending topics for each day
