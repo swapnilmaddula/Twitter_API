@@ -4,6 +4,8 @@ This repo contains the code for an app to parse tweet date and identify 5 most c
 
 The app can be executed by cloning the directory and running the command > docker-compose up --build
 
+the dockertext file is used to install java, spark 3.5.1, and dependencies in requirements.txt
+
 The structure of the directory is as follows:
 1) "src" folder contains the main code in python and pyspark
 2) the test_main.py file contains the unit test (described in the file)
