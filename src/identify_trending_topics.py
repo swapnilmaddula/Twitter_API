@@ -26,7 +26,8 @@ class Top5Trends:
     StructField("created_at", StringType(), True),
     StructField("content", StringType(), True),
     StructField("tweet_id", LongType(), True)])
-        tweet_data = self.spark.read.parquet(self.filepath_silver, header=True, inferSchema=True)
+        tweet_data = self.spark.read.options(schema = schema).parquet(self.filepath_silver, header=True)
+        tweet_data.show()
         return tweet_data
     
     def obtain_list_of_ignore_words(self, language):
