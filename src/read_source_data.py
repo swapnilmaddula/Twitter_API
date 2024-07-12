@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+from pyspark.sql.types import StructType, StructField, StringType, LongType
 
 class LoadTweetData:
     def __init__(self, file_path_source, folder_path_silver):
@@ -18,14 +18,15 @@ class LoadTweetData:
         rows = []
         for line in json_lines:
             try:
+                tweet = json.loads(line.strip())
                 tweet_id = tweet['twitter']['id']
                 tweet_id = int(tweet_id)
-                tweet = json.loads(line.strip())
                 created_at_raw = tweet['interaction']['created_at']
                 created_at = datetime.strptime(created_at_raw, '%a, %d %b %Y %H:%M:%S +0000').isoformat()
                 content = tweet['interaction']['content']
                 rows.append([created_at, content, tweet_id])
             except Exception as e:
+                print(e)
                 pass
         return rows
 
@@ -35,7 +36,7 @@ class LoadTweetData:
         schema = StructType([
             StructField("created_at", StringType(), True),
             StructField("content", StringType(), True),
-            StructField("tweet_id", IntegerType(), True)  
+            StructField("tweet_id", LongType(), True)  
         ])
         
         new_data = self.spark.createDataFrame(rows, schema)
@@ -59,6 +60,7 @@ class LoadTweetData:
             UNION
             SELECT * FROM source_data
         """)
+
         merged_data = merged_data.dropDuplicates()
         try:
             merged_data.write.mode("overwrite").option("quoteAll", "true").csv(path=self.folder_path_silver, header=True)
