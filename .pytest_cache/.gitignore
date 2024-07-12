@@ -4,4 +4,6 @@ data/gold
 data/silver
 !data/silver.gitkeep
 
+test_data/gold
+!/test_data/gold.gitkeep
 
