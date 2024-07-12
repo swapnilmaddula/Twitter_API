@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.functions import to_date, collect_list, concat_ws, udf, StringType
+from pyspark.sql.types import StructType, StructField, StringType, LongType
 import nltk
 from collections import Counter
 import re
@@ -20,8 +21,12 @@ class Top5Trends:
         self.spark.sparkContext.setLogLevel("ERROR")
 
 
-    def read_csv(self):
-        tweet_data = self.spark.read.csv(self.filepath_silver, header=True, inferSchema=True)
+    def read_parquet(self):
+        schema = StructType([
+    StructField("created_at", StringType(), True),
+    StructField("content", StringType(), True),
+    StructField("tweet_id", LongType(), True)])
+        tweet_data = self.spark.read.parquet(self.filepath_silver, header=True, inferSchema=True)
         return tweet_data
     
     def obtain_list_of_ignore_words(self, language):
@@ -29,7 +34,7 @@ class Top5Trends:
         return stop_words
     
     def identify_trending_topics(self):
-        tweet_data = self.read_csv()
+        tweet_data = self.read_parquet()
         grouped_tweets = tweet_data.withColumn("date", F.to_date("created_at"))
         grouped_tweets = grouped_tweets.groupBy("date").agg(F.concat_ws(" ", F.collect_list("content")).alias("concatenated_content"))
         grouped_tweets = grouped_tweets.na.drop(subset = ["date"])

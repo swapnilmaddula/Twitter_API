@@ -10,7 +10,7 @@ def main(source_file_path, silver_path, gold_path):
     load_tweet_data = read_source_data.LoadTweetData(file_path_source=source_file_path, folder_path_silver=silver_path)
     load_tweet_data.incremental_load()
 
-    top5trends = identify_trending_topics.Top5Trends(filepath_silver=f"{silver_path}/*.csv", folderpath_gold=gold_path)
+    top5trends = identify_trending_topics.Top5Trends(filepath_silver=silver_path, folderpath_gold=gold_path)
     top5trends.identify_trending_topics()
 
 if __name__ == "__main__":

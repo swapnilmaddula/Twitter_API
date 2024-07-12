@@ -26,7 +26,6 @@ class LoadTweetData:
                 content = tweet['interaction']['content']
                 rows.append([created_at, content, tweet_id])
             except Exception as e:
-                print(e)
                 pass
         return rows
 
@@ -43,13 +42,12 @@ class LoadTweetData:
         new_data.createOrReplaceTempView("new_data")
 
         try:
-            source_data = self.spark.read.csv(path=f"{self.folder_path_silver}/*.csv", header=True, schema=schema)
+            source_data = self.spark.read.parquet(path=self.folder_path_silver, header=True, schema=schema)
             source_data.createOrReplaceTempView("source_data")
         except Exception as e:
             print(f"Error reading source data: {e}")
             source_data = self.spark.createDataFrame([], schema)
             source_data.createOrReplaceTempView("source_data")
-
 
         # SQL query to merge new data into existing data
         merged_data = self.spark.sql("""
@@ -60,10 +58,11 @@ class LoadTweetData:
             UNION
             SELECT * FROM source_data
         """)
+        merged_data_df = self.spark.createDataFrame(merged_data.collect(), schema)
 
         merged_data = merged_data.dropDuplicates()
         try:
-            merged_data.write.mode("overwrite").option("quoteAll", "true").csv(path=self.folder_path_silver, header=True)
+            merged_data.write.mode("overwrite").parquet(path=self.folder_path_silver)
             print("Data written successfully")
         except Exception as e:
             print(f"Error writing data: {e}")

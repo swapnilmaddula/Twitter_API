@@ -2,6 +2,7 @@ import pytest
 import identify_trending_topics
 import read_source_data
 from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType, StructField, StringType, LongType
 
 
 spark = SparkSession.builder.appName("Elsevier").getOrCreate()
@@ -16,10 +17,10 @@ def test_main1():
     silver_path = "test_data/silver"
     gold_path = "test_data/gold/top5trends"
 
-    top5trends = identify_trending_topics.Top5Trends(filepath_silver=f"{silver_path}/*.csv", folderpath_gold=gold_path)
+    top5trends = identify_trending_topics.Top5Trends(filepath_silver=silver_path, folderpath_gold=gold_path)
     top5trends.identify_trending_topics()
 
-    gold_table = spark.read.csv(path = gold_path+ "/*csv", header = True)
+    gold_table = spark.read.csv(path = gold_path, header = True)
 
     gold_table.show
 
@@ -32,7 +33,7 @@ def test_main1():
     assert(row_count) == 0
 
 # 2. test for duplicates - regression
-    # test setup: logic implemented for deduplication
+    # test setup: logic implemented for deduplication, data used from main data folders 
     # expectation: silver table should not contain duplicates
 
 
@@ -44,7 +45,13 @@ def test_main2():
     Read_source = read_source_data.LoadTweetData(file_path_source=source_path, folder_path_silver= silver_path)
     Read_source.incremental_load()
 
-    silver_table = spark.read.csv(path = silver_path+ "/*csv", header = True)
+    schema = StructType([
+    StructField("created_at", StringType(), True),
+    StructField("content", StringType(), True),
+    StructField("tweet_id", LongType(), True)])
+
+    silver_table = spark.read.schema(schema).parquet(path = silver_path, header = True)
+    silver_table.show()
 
     duplicate_rows_count = silver_table.count() - silver_table.distinct().count()
     print("this is count --------------------------")
