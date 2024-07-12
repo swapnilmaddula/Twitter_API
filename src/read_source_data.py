@@ -4,7 +4,6 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType
 
 class LoadTweetData:
-
     def __init__(self, file_path_source, folder_path_silver):
         self.new_data = []
         self.file_path_source = file_path_source 
@@ -12,8 +11,7 @@ class LoadTweetData:
         self.spark = SparkSession.builder.appName("Elsevier").getOrCreate()
         self.spark.sparkContext.setLogLevel("ERROR")
 
-        
-    def read_json_file(self, file_path):
+    def read_source_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
             data = file.readlines()
         json_lines = data
@@ -30,8 +28,9 @@ class LoadTweetData:
                 pass
         return rows
 
+    #incremental load
     def incremental_load(self):
-        rows = self.read_json_file(self.file_path_source)
+        rows = self.read_source_file(self.file_path_source)
         schema = StructType([
             StructField("created_at", StringType(), True),
             StructField("content", StringType(), True),
