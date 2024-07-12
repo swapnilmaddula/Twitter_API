@@ -42,10 +42,10 @@ class LoadTweetData:
         new_data.createOrReplaceTempView("new_data")
 
         try:
-            source_data = self.spark.read.parquet(path=self.folder_path_silver, header=True, schema=schema)
+            source_data = self.spark.read.options(schema=schema).parquet(path=self.folder_path_silver, header=True)
             source_data.createOrReplaceTempView("source_data")
         except Exception as e:
-            print(f"Error reading source data: {e}")
+            print(f"file doesnt exis yet: {e}")
             source_data = self.spark.createDataFrame([], schema)
             source_data.createOrReplaceTempView("source_data")
 
@@ -61,7 +61,7 @@ class LoadTweetData:
 
         merged_data = merged_data.dropDuplicates()
         try:
-            merged_data.write.mode("overwrite").parquet(path=self.folder_path_silver)
+            merged_data.write.options(schema=schema).mode("overwrite").parquet(path=self.folder_path_silver)
             print("Data written successfully")
         except Exception as e:
             print(f"Error writing data: {e}")

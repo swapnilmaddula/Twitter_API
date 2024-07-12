@@ -53,7 +53,7 @@ def test_main2():
     StructField("content", StringType(), True),
     StructField("tweet_id", LongType(), True)])
 
-    silver_table = spark.read.schema(schema).parquet(path = silver_path, header = True)
+    silver_table = spark.read.options(schema=schema).parquet(path = silver_path, header = True)
     silver_table.show()
 
     duplicate_rows_count = silver_table.count() - silver_table.distinct().count()
