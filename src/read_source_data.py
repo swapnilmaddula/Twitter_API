@@ -58,7 +58,6 @@ class LoadTweetData:
             UNION
             SELECT * FROM source_data
         """)
-        merged_data_df = self.spark.createDataFrame(merged_data.collect(), schema)
 
         merged_data = merged_data.dropDuplicates()
         try:

@@ -20,9 +20,12 @@ def test_main1():
     top5trends = identify_trending_topics.Top5Trends(filepath_silver=silver_path, folderpath_gold=gold_path)
     top5trends.identify_trending_topics()
 
-    gold_table = spark.read.parquet(path = gold_path, header = True)
+    schema = StructType([
+    StructField("created_at", StringType(), True),
+    StructField("content", StringType(), True),
+    StructField("tweet_id", LongType(), True)])
 
-    gold_table.show
+    gold_table = spark.read.csv(path = gold_path+ "/*.csv", header = True)
 
     gold_table.createOrReplaceTempView('data')
 
