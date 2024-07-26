@@ -1,0 +1,16 @@
+{
+  "name": "My Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "extensions": [
+    "ms-vscode.cpptools",
+    "ms-python.python"
+  ],
+  "forwardPorts": [3000, 5000],
+  "remoteUser": "vscode"
+}
