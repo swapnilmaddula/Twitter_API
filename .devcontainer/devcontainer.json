@@ -1,5 +1,12 @@
 {
   "image": "bitnami/spark:latest",
-  "features": {
-  }
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  },
+  "forwardPorts": [8080],
+  "postCreateCommand": "echo 'Spark is ready!'",
+  "remoteUser": "root"
 }
